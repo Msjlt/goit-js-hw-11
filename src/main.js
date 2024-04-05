@@ -8,33 +8,44 @@ import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-document
-  .getElementById('search-form')
-  .addEventListener('submit', function (event) {
-    event.preventDefault(); // Отменяем стандартное поведение формы
+const API_KEY = '43059810-21766dfeafea29ca9c24ae0e2';
+const list = document.getElementById('list');
+const params = new URLSearchParams({
+  key: API_KEY,
+  q: `cat+dog`,
+  // q: 'red rose',
+  image_type: 'photo',
+  orientation: 'horizontal',
+  safesearch: true,
+});
 
-    // Получаем значение из текстового поля
-    const searchQuery = document.getElementById('search-input').value.trim();
-
-    // Проверяем, не пустая ли строка поиска
-    if (searchQuery === '') {
-      alert('Please enter a search query');
-      return; // Прерываем выполнение функции, если строка пуста
+fetch(`https://pixabay.com/api?${params}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(response.status);
     }
-
-    // Выполняем HTTP-запрос с поисковым запросом
-    fetch(`https://api.example.com/images?query=${searchQuery}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Обработка полученных данных (например, отображение изображений)
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-      });
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+    list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+  })
+  .catch(error => {
+    iziToast.error({
+      title: 'Error',
+      message:
+        'Sorry, there are no images matching your search query. Please try again!',
+    });
   });
+
+function createMarkup(arr) {
+  return arr
+    .map(
+      ({ id, previewURL, tags }) => `
+        <li data-id="${id}">
+            <img src="${previewURL}" alt="${tags}" width="300">
+        </li>
+    `
+    )
+    .join('');
+}
