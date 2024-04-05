@@ -8,44 +8,62 @@ import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const API_KEY = '43059810-21766dfeafea29ca9c24ae0e2';
+// Import
+import { servicePicture } from './js/pixabay-api.js';
+import { createMarkup } from './js/render-functions.js';
+
+// Code
+const searchForm = document.getElementById('search-form');
 const list = document.getElementById('list');
-const params = new URLSearchParams({
-  key: API_KEY,
-  q: `cat+dog`,
-  // q: 'red rose',
-  image_type: 'photo',
-  orientation: 'horizontal',
-  safesearch: true,
-});
 
-fetch(`https://pixabay.com/api?${params}`)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(response.status);
+searchForm.addEventListener('submit', handleSubmit);
+
+function handleSubmit(event) {
+  event.preventDefault();
+  const { picture } = event.currentTarget.elements;
+
+  // Show Loader
+  function showLoader() {
+    const loader = document.querySelector('.loader');
+    if (loader) {
+      loader.style.display = 'block';
     }
-    return response.json();
-  })
-  .then(data => {
-    console.log(data);
-    list.insertAdjacentHTML('beforeend', createMarkup(data.hits));
-  })
-  .catch(error => {
-    iziToast.error({
-      title: 'Error',
-      message:
-        'Sorry, there are no images matching your search query. Please try again!',
-    });
-  });
+  }
 
-function createMarkup(arr) {
-  return arr
-    .map(
-      ({ id, previewURL, tags }) => `
-        <li data-id="${id}">
-            <img src="${previewURL}" alt="${tags}" width="300">
-        </li>
-    `
-    )
-    .join('');
+  // Hide Loader
+  function hideLoader() {
+    const loader = document.querySelector('.loader');
+    if (loader) {
+      loader.style.display = 'none';
+    }
+  }
+
+  showLoader();
+
+  servicePicture(picture.value)
+    .then(data => {
+      if (data.hits.length === 0) {
+        iziToast.error({
+          title: 'Error',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+        });
+      } else {
+        list.innerHTML = createMarkup(data.hits);
+
+        const gallery = new SimpleLightbox('.pictureCard a', {
+          captionType: 'attr',
+          captionsData: 'alt',
+          captionDelay: 250,
+        });
+        gallery.refresh();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    })
+    .finally(() => {
+      hideLoader();
+      searchForm.reset();
+    });
 }
