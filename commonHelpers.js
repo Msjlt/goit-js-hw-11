@@ -1,7 +1,7 @@
-import{i as l,S as u}from"./assets/vendor-5b791d57.js";(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))n(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const a of t.addedNodes)a.tagName==="LINK"&&a.rel==="modulepreload"&&n(a)}).observe(document,{childList:!0,subtree:!0});function s(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function n(e){if(e.ep)return;e.ep=!0;const t=s(e);fetch(e.href,t)}})();const d="https://pixabay.com/api/",p="43059810-21766dfeafea29ca9c24ae0e2";function f(o=""){const r=new URLSearchParams({key:p,q:o,image_type:"photo",orientation:"horizontal",safesearch:!0});return fetch(`${d}?${r}`).then(s=>{if(!s.ok)throw new Error(s.status);return s.json()})}function m(o){return o.map(({webformatURL:r,largeImageURL:s,tags:n,likes:e,views:t,comments:a,downloads:c})=>`
+import{i as a}from"./assets/vendor-bee2f3af.js";(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))o(e);new MutationObserver(e=>{for(const r of e)if(r.type==="childList")for(const i of r.addedNodes)i.tagName==="LINK"&&i.rel==="modulepreload"&&o(i)}).observe(document,{childList:!0,subtree:!0});function t(e){const r={};return e.integrity&&(r.integrity=e.integrity),e.referrerPolicy&&(r.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?r.credentials="include":e.crossOrigin==="anonymous"?r.credentials="omit":r.credentials="same-origin",r}function o(e){if(e.ep)return;e.ep=!0;const r=t(e);fetch(e.href,r)}})();const p="https://pixabay.com/api/",f="43059810-21766dfeafea29ca9c24ae0e2";function m(n=""){const s=new URLSearchParams({key:f,q:n,image_type:"photo",orientation:"horizontal",safesearch:!0});return fetch(`${p}?${s}`).then(t=>{if(!t.ok)throw new Error(t.status);return t.json()})}function h(n){return n.map(({webformatURL:s,largeImageURL:t,tags:o,likes:e,views:r,comments:i,downloads:d})=>`
         <li class="pictureCard">
-          <a href="${s}" class="lightbox-image">
-            <img src="${r}" alt="${n}" class="picture-icon">
+          <a href="${t}" class="lightbox-image">
+            <img src="${s}" alt="${o}" class="picture-icon">
           </a>
           <div class="picture-info">
             <div>
@@ -10,16 +10,16 @@ import{i as l,S as u}from"./assets/vendor-5b791d57.js";(function(){const r=docum
             </div>
             <div>
               <span>Views:</span>
-              <span class="views">${t}</span>
+              <span class="views">${r}</span>
             </div>
             <div>
               <span>Comments:</span>
-              <span class="comments">${a}</span>
+              <span class="comments">${i}</span>
             </div>
             <div>
               <span>Downloads:</span>
-              <span class="downloads">${c}</span>
+              <span class="downloads">${d}</span>
             </div>
           </div>
-        </li>`).join("")}const i=document.getElementById("search-form"),h=document.getElementById("list");i.addEventListener("submit",y);function y(o){o.preventDefault();const{picture:r}=o.currentTarget.elements;function s(){const e=document.querySelector(".loader");e&&(e.style.display="block")}function n(){const e=document.querySelector(".loader");e&&(e.style.display="none")}s(),f(r.value).then(e=>{e.hits.length===0?l.error({title:"Error",message:"Sorry, there are no images matching your search query. Please try again!"}):(h.innerHTML=m(e.hits),new u(".pictureCard a",{captionType:"attr",captionsData:"alt",captionDelay:250}).refresh())}).catch(e=>{console.error("Error:",e)}).finally(()=>{n(),i.reset()})}
+        </li>`).join("")}const l=document.getElementById("search-form"),u=document.getElementById("list");l.addEventListener("submit",y);function c(){u.innerHTML=""}function y(n){n.preventDefault();const{picture:s}=n.currentTarget.elements;loader.style.display="block",c(),m(s.value).then(t=>{t.hits.length===0?a.error({title:"Error",message:"Sorry, there are no images matching your search query. Please try again!"}):u.innerHTML=h(t.hits)}).catch(t=>{console.error("Error:",t),a.error({title:"Error",message:"An error occurred while fetching images. Please try again later!"}),c()}).finally(()=>{loader.style.display="none",l.reset()})}
 //# sourceMappingURL=commonHelpers.js.map
