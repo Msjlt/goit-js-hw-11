@@ -42,6 +42,12 @@ function handleSubmit(event) {
         });
       } else {
         list.innerHTML = createMarkup(data.hits);
+
+        const gallery = new SimpleLightbox('.pictureCard a', {
+          captionType: 'attr',
+          captionsData: 'alt',
+          captionDelay: 250,
+        });
       }
     })
     .catch(error => {
