@@ -18,27 +18,19 @@ const list = document.getElementById('list');
 
 searchForm.addEventListener('submit', handleSubmit);
 
+function clearMarkup() {
+  list.innerHTML = '';
+}
+
 function handleSubmit(event) {
   event.preventDefault();
   const { picture } = event.currentTarget.elements;
 
   // Show Loader
-  function showLoader() {
-    const loader = document.querySelector('.loader');
-    if (loader) {
-      loader.style.display = 'block';
-    }
-  }
+  loader.style.display = 'block';
 
-  // Hide Loader
-  function hideLoader() {
-    const loader = document.querySelector('.loader');
-    if (loader) {
-      loader.style.display = 'none';
-    }
-  }
-
-  showLoader();
+  // Clear
+  clearMarkup();
 
   servicePicture(picture.value)
     .then(data => {
@@ -50,20 +42,22 @@ function handleSubmit(event) {
         });
       } else {
         list.innerHTML = createMarkup(data.hits);
-
-        const gallery = new SimpleLightbox('.pictureCard a', {
-          captionType: 'attr',
-          captionsData: 'alt',
-          captionDelay: 250,
-        });
-        gallery.refresh();
       }
     })
     .catch(error => {
       console.error('Error:', error);
+      iziToast.error({
+        title: 'Error',
+        message:
+          'An error occurred while fetching images. Please try again later!',
+      });
+      // Clear
+      clearMarkup();
     })
     .finally(() => {
-      hideLoader();
+      // Hide Loader
+      loader.style.display = 'none';
+      // Clear
       searchForm.reset();
     });
 }
